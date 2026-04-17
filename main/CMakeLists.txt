@@ -114,7 +114,7 @@ REQUIRES
     "esp_wifi"
     "esp_lcd"
     "esp_psram"
-    "json"
+    "arduinojson"
     "tcp_transport"
     "nvs_flash"
     "spiffs"
@@ -128,32 +128,67 @@ REQUIRES
 )
 
 # Board selection defines
+# Suppress LVGL enum conversion warnings that don't affect functionality (C++ only)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(${COMPONENT_TARGET} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Wno-deprecated-enum-enum-conversion>)
+endif()
+
+# Board selection defines and image conversion
 if(CONFIG_BOARD_NERDQAXEPLUS)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDQAXEPLUS)
+    set(BOARD_THEME_NAME "NerdQaxePlus")
 endif()
 if(CONFIG_BOARD_NERDQAXEPLUS2)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDQAXEPLUS2)
+    set(BOARD_THEME_NAME "NerdQaxePlus2")
 endif()
 if(CONFIG_BOARD_NERDOCTAXEPLUS)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDOCTAXEPLUS)
+    set(BOARD_THEME_NAME "NerdOctaxePlus")
 endif()
 if(CONFIG_BOARD_NERDAXE)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDAXE)
+    set(BOARD_THEME_NAME "NerdAxe")
 endif()
 if(CONFIG_BOARD_NERDOCTAXEGAMMA)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDOCTAXEGAMMA)
+    set(BOARD_THEME_NAME "NerdOctaxeGamma")
 endif()
 if(CONFIG_BOARD_NERDAXEGAMMA)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDAXEGAMMA)
+    set(BOARD_THEME_NAME "NerdAxeGamma")
 endif()
 if(CONFIG_BOARD_NERDHAXEGAMMA)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDHAXEGAMMA)
+    set(BOARD_THEME_NAME "NerdHaxeGamma")
 endif()
 if(CONFIG_BOARD_NERDEKO)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDEKO)
+    set(BOARD_THEME_NAME "NerdEko")
 endif()
 if(CONFIG_BOARD_NERDQX)
     target_compile_definitions(${COMPONENT_TARGET} PUBLIC NERDQX)
+    set(BOARD_THEME_NAME "NerdQX")
+endif()
+
+# Add custom command to run image conversion script before compilation
+if(DEFINED BOARD_THEME_NAME)
+    set(CONVERT_SCRIPT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/displays/images/themes/${BOARD_THEME_NAME}")
+    set(CONVERT_SCRIPT "${CONVERT_SCRIPT_DIR}/convert.sh")
+    
+    if(EXISTS "${CONVERT_SCRIPT}")
+        add_custom_target(convert_images
+            COMMAND bash "${CONVERT_SCRIPT}"
+            WORKING_DIRECTORY "${CONVERT_SCRIPT_DIR}"
+            COMMENT "Converting images for ${BOARD_THEME_NAME}..."
+            VERBATIM
+        )
+        # Make the component depend on image conversion
+        add_dependencies(${COMPONENT_TARGET} convert_images)
+        message(STATUS "Image conversion enabled for board: ${BOARD_THEME_NAME}")
+    else()
+        message(WARNING "Convert script not found at ${CONVERT_SCRIPT}")
+    endif()
 endif()
 
 

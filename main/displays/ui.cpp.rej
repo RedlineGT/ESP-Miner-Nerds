@@ -1,0 +1,44 @@
+--- main/displays/ui.cpp
++++ main/displays/ui.cpp
+@@ -17,7 +17,21 @@ UI::UI() {
+ static const char *TAG="ui";
+ 
+ ///////////////////// FUNCTIONS ////////////////////
++inline lv_coord_t scale_x(lv_coord_t value)
++{
++    return (lv_coord_t) (value * ((float) TDISPLAYS3_LCD_H_RES / 320.0f));
++}
++inline lv_coord_t scale_y(lv_coord_t value)
++{
++    return (lv_coord_t) (value * ((float) TDISPLAYS3_LCD_V_RES / 170.0f));
++}
+ 
++inline void zoom_img(lv_obj_t *img)
++{
++const lv_img_dsc_t *img_dsc = (const lv_img_dsc_t *)lv_img_get_src(img);
++float scale = (float)TDISPLAYS3_LCD_H_RES / (float)img_dsc->header.w;
++lv_img_set_zoom(img, (uint16_t)(256 * scale));
++}
+ 
+ ///////////////////// SCREENS ////////////////////
+ 
+@@ -564,16 +578,15 @@ void UI::globalStatsScreenInit(void)
+ 
+     ui_lblhighFee = lv_label_create(ui_GlobalStats);
+     lv_obj_set_width(ui_lblhighFee, LV_SIZE_CONTENT);   /// 1
+-    lv_obj_set_height(ui_lblhighFee, LV_SIZE_CONTENT);    /// 1
+-    lv_obj_set_x(ui_lblhighFee, 138);
+-    lv_obj_set_y(ui_lblhighFee, -64);
++    lv_obj_set_height(ui_lblhighFee, (LV_SIZE_CONTENT));    /// 1
++    lv_obj_set_x(ui_lblhighFee, scale_x(138));
++    lv_obj_set_y(ui_lblhighFee, scale_y(-64));
+     lv_obj_set_align(ui_lblhighFee, LV_ALIGN_CENTER);
+     lv_label_set_text(ui_lblhighFee, "1000");
+     lv_obj_set_style_text_color(ui_lblhighFee, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+     lv_obj_set_style_text_opa(ui_lblhighFee, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+     lv_obj_set_style_text_align(ui_lblhighFee, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+     lv_obj_set_style_text_font(ui_lblhighFee, &ui_font_OpenSansBold13, LV_PART_MAIN | LV_STATE_DEFAULT);
+-
+ }
+ void UI::createQRScreen(uint8_t *buf, int size) {
+     if (!buf || size <= 0) {

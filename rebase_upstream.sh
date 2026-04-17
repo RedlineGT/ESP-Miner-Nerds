@@ -1,6 +1,7 @@
 #!/bin/bash
 # Rebase script for syncing with upstream Official_Bleeding_Edge branch
 # while preserving 3.5" display adaptations
+#cd /home/nahin/Desktop/ESP-Miner-NerdQAxePlus-develop && git restore readme.md && git remote | grep -q '^upstream\s' || git remote add upstream https://github.com/RedlineGT/ESP-Miner-Nerds.git && git fetch upstream && git checkout Official_Bleeding_Edge_3.5Screen && git rebase upstream/Official_Bleeding_Edge && git push --force origin Official_Bleeding_Edge_3.5Screen
 
 set -e
 

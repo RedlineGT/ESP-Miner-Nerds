@@ -1,192 +1,78 @@
-[![](https://dcbadge.vercel.app/api/server/3E8ca2dkcC)](https://discord.gg/3E8ca2dkcC)
+Changes Made to https://github.com/shufps/ESP-Miner-NerdQAxePlus/tree/develop (ESP-Miner-NerdQAxePlus)
 
-# ESP-Miner-Nerdaxe version
+ESP-Miner-Nerds (originally forked from ESP-Miner-NerdQAxePlus) has been modified to integrate 3.5" display support and upstream sync automation. Below is a comprehensive list of all changes applied, based on the integration from https://github.com/luclucs/qaxeplus2-large-screen (qaxeplus2-large-screen) and subsequent development tasks.
 
-| Supported Targets | ESP32-S3              |
-| ----------------- | --------------------- |
-| Required Platform | >= ESP-IDF v5.3.X       |
-| ----------------- | --------------------- |
 
-This is a forked version from the NerdAxe miner that was modified for using on the [NerdQAxe+](https://github.com/shufps/qaxe).
+1. Display and UI Adaptations (qaxeplus2-large-screen)
 
-Credits to the devs:
-- BitAxe devs on OSMU: @skot/ESP-Miner, @ben and @jhonny
-- NerdAxe dev @BitMaker
+displayDriver.h:
+Updated LCD resolution from 320x170 to 480x320.
+Added scaling defines: TDISPLAYS3_SCALE_FACTOR=3.0f, TDISPLAYS3_ZOOM_LEVEL calculation.
+Modified panel mirroring and gap settings for the larger display.
 
+displayDriver.cpp:
+Adjusted panel configuration for the new resolution.
 
-## How to flash/update firmware
+ui.cpp:
+Added scaling functions: scale_x(), scale_y(), zoom_img() for coordinate adjustments.
+Updated UI elements to use scaled coordinates.
 
-The newest releases are always here:
+ui.h:
+Added declaration for ui_font_DigitalNumbers40.
+main/displays/images/themes/NerdQaxePlus2/:
+Replaced all PNG assets with 480x320 resized versions (e.g., backgrounds, icons, fonts).
 
-https://github.com/shufps/ESP-Miner-NerdQAxePlus/releases
+CMakeLists.txt:
+Added board selection preprocessor defines (e.g., CONFIG_BOARD_NERDOCTAXEGAMMA).
+Included font references and board-specific compilation flags.
 
-### Recommended Method: The Webflasher
+Kconfig.projbuild:
+Added board choice menu with default NERDOCTAXEGAMMA.
 
-The [Webflasher](https://shufps.github.io/nerdqaxe-web-flasher/) (modified fork of the great [Bitaxe Webflasher](https://github.com/bitaxeorg/bitaxe-web-flasher) by [Wantclue](https://github.com/WantClue)) is the easiest method of updating all Nerd*axe variants.
+tasks.json (Docker build task):
+Added BOARD=NERDOCTAXEGAMMA environment variable.
 
-[<img src="https://github.com/user-attachments/assets/4168f23a-bfe7-4536-91e3-7af6df9a203a" style="border:5px solid red;width:200px">](https://shufps.github.io/nerdqaxe-web-flasher/)
 
-It uses the official releases published on this repository and is always up-to-date.
+2. Build and Configuration Changes
+Configured build for NerdQaxePlus2 board (later switched to NerdOctaxeGamma).
+Updated sdkconfig.defaults and sdkconfig.ci for ESP32-S3 compatibility.
+Used Docker-based build environment (esp-idf-builder) for reproducible firmware generation.
+Firmware builds successfully (~3.1MB binary).
 
-### Other Methods
 
-#### Clone repository and prepare config
+3. Git Repository Setup and Branch Management
+Initialized Git repository in the workspace.
+Set remote origin to https://github.com/RedlineGT/ESP-Miner-Nerds.git.
+Created branch Official_Bleeding_Edge_3.5Screen with all adaptations.
+Committed changes in two main commits:
+Initial commit: ESP-Miner with NerdOctaxeGamma board + 3.5" display adaptation.
+Latest commit: Added upstream sync automation scripts and documentation.
+Force-pushed the branch to remote, overwriting existing remote branch history.
 
-First you need to clone the repository and create a local copy of the config file:
 
-```bash
-# clone repository
-git clone https://github.com/shufps/ESP-Miner-NerdQAxePlus
+4. Automation and Documentation Scripts
+rebase_upstream.sh (executable script):
+Automates Git rebase onto upstream Official_Bleeding_Edge branch.
+Includes conflict detection and resolution prompts.
 
-# change into the cloned repository
-cd ESP-Miner-NerdQAxePlus
+CONFLICT_RESOLUTION.md:
+Comprehensive guide for handling merge conflicts during upstream sync.
+Covers strategies for display-related files, build configs, and asset updates.
 
-# copy the example config
-cp config.cvs.example config.cvs
-```
+QUICK_REFERENCE.md:
+Cheat sheet for sync workflow, commands, and troubleshooting.
+Includes steps for rebasing, pushing, and maintaining adaptations.
 
-Then you can edit the fields like `stratumurl` and so on.
 
-#### Bitaxetool
+5. Other Modifications
+Resolved build issues: Added missing BOARD environment variable, manually cloned libsecp256k1 submodule.
+Updated repository references: Changed upstream from original to https://github.com/RedlineGT/ESP-Miner-Nerds/tree/Official_Bleeding_Edge.
+No changes to core mining logic, stratum protocols, or hardware drivers beyond display/UI scaling.
 
-After the changes on the `config.cvs` files are done, you use the `bitaxetool` to flash factory binary and the config onto the device.
 
-To switch it into bootload mode, reset the device with presset `boot` button.
+Key Outcomes
+Display Support: Firmware now supports 3.5" screens with proper scaling (3x factor) for NerdQaxePlus2/NerdOctaxeGamma boards.
+Maintainability: Automation scripts enable easy syncing with upstream updates while preserving customizations.
 
-```
-bitaxetool --config ./config.cvs --firmware esp-miner-factory-NERDQAXEPLUS-v1.0.10.bin
-
-```
-
-
-## How to build firmware
-
-### Using Docker
-
-Docker containers allow to use the toolchain without installing `esp-idf` or `Node 20.x` on the system.
-
-#### 0. TL;DR - `esp-miner.bin`, `www.bin`
-```bash
-
-# only once
-cd docker
-./build_docker.sh
-cd ..
-
-export BOARD="NERDQAXEPLUS2"
-./docker/idf.sh set-target esp32-s3
-
-# after each change on the source code
-./docker/idf.sh build
-```
-
-Afterwards you will have a `esp-miner.bin` and `www.bin` in your `build` directory.
-
-
-#### 1. First build the docker container
-
-```bash
-cd docker
-./build_docker.sh
-```
-
-#### 2. How to use it
-
-There are several scripts in the `docker` directory but what is most flexible is to just start the container as bash via
-
-```bash
-./docker/idf-shell.sh
-```
-
-You will get a new terminal that provides tools like:
-- `idf.py`
-- `bitaxetool`
-- `esptool.py`
-- `nvs_partition_gen.py`
-
-The current repository will be mounted to `/home/builder/project`.
-
-The default `builder` user has `uid:gid = 1000:1000` (like the main user on *buntu/Mint)
-
-#### 3. Compiling & Flashing using the shell
-
-#### 3.1. Just flashing with dockered `bitaxetool` with factory binary
-
-(no `idf-shell.sh` version)
-
-```bash
-./docker/bitaxetool.sh --config config.cvs --firmware esp-miner-factory-NERDQAXEPLUS-v1.0.10.bin -p /dev/ttyACM0
-```
-
-##### 3.2. Compiling & Flashing using BitAxe tool
-
-(inside of `idf-shell.sh`)
-
-```bash
-# start idf-shell
-./docker/idf-shell.sh
-
-# set board
-export BOARD="NERDQAXEPLUS2"
-
-# set target and build the binaries
-idf.py set-target esp32s3
-idf.py build
-
-# merge all partitions including config into a single binary
-./merge_bin.sh nerdqaxe+.bin
-
-bitaxetool --config config.cvs --firmware esp-miner-factory-nerdqaxe+.bin  -p /dev/ttyACM0
-```
-
-#### 3.3. All manual steps for building and flashing
-
-(inside of `idf-shell.sh`)
-
-```bash
-# start idf-shell
-./docker/idf-shell.sh
-
-# set board
-export BOARD="NERDQAXEPLUS2"
-
-# set target and build the binaries
-idf.py set-target esp32s3
-
-# optional if you want to change the sdkconfig
-idf.py menuconfig
-
-# build the binaries
-idf.py build
-
-# creat config.bin nvm partition from config.cvs
-nvs_partition_gen.py generate config.cvs config.bin 12288
-
-# merge all partitions including config into a single binary
-./merge_bin_with_config.sh nerdqaxe+.bin
-
-# flash using esptool
-esptool.py --chip esp32s3 -p /dev/ttyACM0 -b 460800 \
-  --before=default_reset --after=hard_reset write_flash \
-  --flash_mode dio --flash_freq 80m --flash_size 16MB 0x0 nerdqaxe+.bin
-```
-
-
-When done just `exit` the shell.
-
-
-### Without Docker
-
-Install bitaxetool from pip. pip is included with Python 3.4 but if you need to install it check <https://pip.pypa.io/en/stable/installation/>
-
-```
-pip install --upgrade bitaxetool
-```
-
-## Grafana Monitoring
-
-<img src="https://github.com/user-attachments/assets/3c485428-5e48-4761-9717-bd88579a747d" width="600px">
-
-The NerdQaxe+ firmware supports Influx and the repository provides an installation with Grafana dashboard that can be started with a few bash commands: https://github.com/shufps/ESP-Miner-NerdQAxePlus/tree/master/monitoring
-
-
+Repository State: Branch Official_Bleeding_Edge_3.5Screen is live on GitHub with all changes committed and pushed.
+All changes are focused on display adaptation and maintenance automation, with no alterations to the core ESP-Miner functionality.

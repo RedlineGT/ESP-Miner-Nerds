@@ -30,6 +30,7 @@
 #include "macros.h"
 #include "main.h"
 #include "nvs_config.h"
+#include "csv_config.h"
 #include "otp/otp.h"
 #include "ping_task.h"
 #include "serial.h"
@@ -208,6 +209,9 @@ extern "C" void app_main(void)
 
     // migrate config
     Config::migrate_config();
+
+    // load config.cvs if it exists (overrides defaults)
+    CsvConfig::load_config_from_csv();
 
 #ifdef NERDQAXEPLUS
     Board *board = new NerdQaxePlus();

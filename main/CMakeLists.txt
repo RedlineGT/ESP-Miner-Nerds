@@ -2,6 +2,7 @@ idf_component_register(
 SRCS
     "main.cpp"
     "nvs_config.cpp"
+    "csv_config.cpp"
     "system.cpp"
     "sntp.cpp"
     "utils.cpp"

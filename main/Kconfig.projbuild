@@ -318,3 +318,39 @@ menu "Stratum Keepalive Configuration"
 
 endmenu
 
+menu "Config CSV Integration"
+
+    config CSV_INTEGRATION_INFO
+        bool "ℹ️ Config CSV Integration Guide"
+        default n
+        help
+            IMPORTANT: This firmware now integrates with config.cvs for easy device provisioning!
+            
+            HOW IT WORKS:
+            • On startup, the firmware loads values from config.cvs (if present in SPIFFS)
+            • These CSV values override the menuconfig defaults
+            • You can also use menuconfig to set defaults that apply if config.cvs isn't present
+            
+            TYPICAL WORKFLOW:
+            1. Create a config.cvs file with network/pool settings
+            2. Flash it to SPIFFS (use "idf.py flash" to upload)
+            3. Device will load config.cvs on next boot
+            4. Use the web interface to modify settings (saved to NVS)
+            5. Export config back to CSV: See csv_config.h functions or use HTTP API
+            
+            ADVANTAGES:
+            ✓ Easy multi-device provisioning (copy config.cvs to each device)
+            ✓ Centralized configuration management
+            ✓ No need to recompile for different network credentials
+            ✓ Changes persist even after firmware updates
+
+    config ENABLE_CSV_CONFIG_EXPORT
+        bool "Enable CSV Config Export via HTTP"
+        default n
+        help
+            When enabled, adds an HTTP endpoint to export current NVS config back to config.cvs.
+            Useful for saving config changes made via web UI or API.
+            Endpoint: /api/config/export
+
+endmenu
+

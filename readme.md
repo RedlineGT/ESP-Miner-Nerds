@@ -1,5 +1,9 @@
 Disclaimer: Use this at your own risk. This unofficial firmware ("Software") is provided "as is" without warranty, express or implied. Users assume all risks, including device failure, data loss, or bricking. The developers are not liable for damages arising from the use of this software, which is not endorsed by the original manufacturer. 
 
+This firmware is built from the latest "develop" branch hence is considered experimental with changes and features being tested for squashing bugs. I am not the original developer, I just sync with their repository and apply my own changes to make it compatible with the 3.5 inch Yysluping screen that many folks are getting from Aliexpress. Yysluping provides the firmware on their github but they have not published their source code and on top of that their interface is horrendous, along with unclear information about their firmware version and labeling.
+
+This firmware can be compiled for any of the Nerd* miners, you just have to change "Target Board" under "Miner Configuration" when you run "idf.py menuconfig"
+
 Changes Made to https://github.com/shufps/ESP-Miner-NerdQAxePlus/tree/develop (ESP-Miner-NerdQAxePlus)
 
 ESP-Miner-Nerds (originally forked from ESP-Miner-NerdQAxePlus) has been modified to integrate 3.5" display support and upstream sync automation. Below is a comprehensive list of all changes applied, based on the integration from https://github.com/luclucs/qaxeplus2-large-screen (qaxeplus2-large-screen) and subsequent development tasks.
@@ -171,10 +175,11 @@ idf.py menuconfig
 ```
 
 **Configuration steps in menu:**
-1. Navigate to → `Board Configuration`
-2. Set display type → `3.5" LCD (480×320 RGB565)`
-3. Set device → `NERDOCTAXEGAMMA` (or your board, example NERDQUAXEPLUS2 for the NerdQuaxe++)
-4. Exit menu → Press `Q`, then confirm to save
+**Configuration steps in menu:**
+1. Navigate to → `Miner Configuration`
+2. Set device → `NERDOCTAXEGAMMA` (or your board, example NERDQUAXEPLUS2 for the NerdQuaxe++)
+3. Exit menu → Press `Q`, then confirm to save
+
 
 ---
 
@@ -449,10 +454,9 @@ idf.py menuconfig
 ```
 
 **Configuration steps in menu:**
-1. Navigate to → `Board Configuration`
-2. Set display type → `3.5" LCD (480×320 RGB565)`
-3. Set device → `NERDOCTAXEGAMMA` (or your board)
-4. Exit menu → Press `Q`, then confirm to save
+1. Navigate to → `Miner Configuration`
+2. Set device → `NERDOCTAXEGAMMA` (or your board)
+3. Exit menu → Press `Q`, then confirm to save
 
 #### 4.4 Exit Container
 ```bash

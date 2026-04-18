@@ -2,7 +2,7 @@ Disclaimer: Use this at your own risk. This unofficial firmware ("Software") is 
 
 This firmware is built from the latest "develop" branch hence is considered experimental with changes and features being tested for squashing bugs. I am not the original developer, I just sync with their repository and apply my own changes to make it compatible with the 3.5 inch Yysluping screen that many folks are getting from Aliexpress. Yysluping provides the firmware on their github but they have not published their source code and on top of that their interface is horrendous, along with unclear information about their firmware version and labeling.
 
-This firmware can be compiled for any of the Nerd* miners, you just have to change "Target Board" under "Miner Configuration" when you run "idf.py menuconfig"
+This firmware can be compiled for any of the Nerd* miners, by default it compiles for the NerdOctaxe Gamma, you just have to change "Target Board" under "Miner Configuration" when you run "idf.py menuconfig"
 
 
 # Project Statistics - April 18, 2026

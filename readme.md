@@ -1,3 +1,5 @@
+Disclaimer: Use this at your own risk. This unofficial firmware ("Software") is provided "as is" without warranty, express or implied. Users assume all risks, including device failure, data loss, or bricking. The developers are not liable for damages arising from the use of this software, which is not endorsed by the original manufacturer. 
+
 Changes Made to https://github.com/shufps/ESP-Miner-NerdQAxePlus/tree/develop (ESP-Miner-NerdQAxePlus)
 
 ESP-Miner-Nerds (originally forked from ESP-Miner-NerdQAxePlus) has been modified to integrate 3.5" display support and upstream sync automation. Below is a comprehensive list of all changes applied, based on the integration from https://github.com/luclucs/qaxeplus2-large-screen (qaxeplus2-large-screen) and subsequent development tasks.
@@ -171,7 +173,7 @@ idf.py menuconfig
 **Configuration steps in menu:**
 1. Navigate to → `Board Configuration`
 2. Set display type → `3.5" LCD (480×320 RGB565)`
-3. Set device → `NERDOCTAXEGAMMA` (or your board)
+3. Set device → `NERDOCTAXEGAMMA` (or your board, example NERDQUAXEPLUS2 for the NerdQuaxe++)
 4. Exit menu → Press `Q`, then confirm to save
 
 ---
